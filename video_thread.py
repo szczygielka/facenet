@@ -5,16 +5,19 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread
 
 
 class VideoThread(QThread):
-    file_name = ""
-    frame_rate = VIDEO_FRAME_RATE
-    on_frame_read = None
+    def __init__(self):
+        super(VideoThread, self).__init__()
+        self.file_name = ""
+        self.frame_rate = VIDEO_FRAME_RATE
+        self.on_frame_read = None
+        self.running = True
 
     def run(self):
         vidcap = cv2.VideoCapture(self.file_name)
         success, image = vidcap.read()
         t1 = time.time()
         frame = 0
-        while success:
+        while success and self.running:
             success, cv_image = vidcap.read()
             if success:
                 self.on_frame_read(cv_image, frame)

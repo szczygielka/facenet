@@ -31,10 +31,11 @@ class VideoArea(ImageArea):
 
     def open_from_file(self, file_name):
         if file_name:
-            self.thread = VideoThread()
-            self.thread.file_name = file_name
-            self.thread.on_frame_read = lambda cv_image, frame: self.update_image(cv_image,  self.thread.file_name,  "{0}/{0}_{1}.png".format(Path(self.thread.file_name).stem,frame), False,)
-            self.thread.start()
+            self.video_thread = VideoThread()
+            self.video_thread.file_name = file_name
+            self.video_thread.on_frame_read = lambda cv_image, frame: self.update_image(cv_image,  self.video_thread.file_name,  
+                            "{0}/{0}_{1}.png".format(Path(self.video_thread.file_name).stem,frame), False,)
+            self.video_thread.start()
 
     def open(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Wybierz plik","", "Filmy(*.mp4)")

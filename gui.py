@@ -80,8 +80,7 @@ class FacenetGui(QMainWindow):
         super().__init__(parent)
         self.setWindowTitle('Facenet')
         
-        self.facenet_manager = FacenetManager(log_callback = self.add_log)
-        
+        self.facenet_manager = FacenetManager()
         self.centralWidget = QWidget()
         self.data_widget = DataArea(self.on_dataset_load_button_clicked_function,
             self.on_threshold_change_function, self.on_log_file_change_function, self.on_multi_path_change_function,
@@ -100,16 +99,12 @@ class FacenetGui(QMainWindow):
         self.data_widget.set_outpath(output_path)
         self.data_widget.set_threshold(threshold)
 
-    def add_log(self, data):
-        filename, output_path, outname, closest_distance, face_name = data
-        self.data_widget.add_to_log("Distance: {:.2f}  Face name: {} \n".format(closest_distance, face_name))
-
     def on_output_path_change_function(self, val):
         self.facenet_manager.set_output_path(val)
 
     def on_dataset_load_button_clicked_function(self, val):
         self.facenet_manager.load_dataset_to_face_detector_manager(val)
-        # self.data_widget.update_loaded_images(len(self.facenet_manager.face_detector.calculates_images))
+        self.data_widget.update_loaded_images(len(self.facenet_manager.face_detector.calculates_images))
 
     def on_threshold_change_function(self, val):
         self.facenet_manager.set_threshold(val)
@@ -125,7 +120,6 @@ class FacenetGui(QMainWindow):
         data = self.facenet_manager.process(path)
         for image, detections in data:
             for d in detections:
-                print(d)
                 filename, output_path, outname, closest_distance, face_name = d
                 self.multi_tab.add_widget(FaceImageWidget(image, filename, output_path, outname, closest_distance, face_name))
 
@@ -139,7 +133,6 @@ class FacenetGui(QMainWindow):
         self.menu = self.menuBar()
         self.fileMenu = self.menu.addMenu("File")
         self.fileMenu.addAction('Exit', self.close)
-
     
     def createTabs(self):
         self.tabs = QTabWidget()

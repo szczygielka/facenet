@@ -74,19 +74,10 @@ class DataArea(QtWidgets.QWidget):
         self.initialize_out_path_gui()
         self.initialize_multi_gui()
         self.initialize_log_gui()
-        self.initialize_log_area()
         self.initialize_layout()
         self.updateThresholdLabel()
         self.setMaximumHeight(300)
-
-    def initialize_log_area(self):
-        self.log = QPlainTextEdit()
-        self.log.setMaximumHeight(500)
-        self.log.setReadOnly(True)
-    
-    def add_to_log(self, text):
-        self.log.appendPlainText(text)
-
+   
     def initialize_layout(self):
         self.layout = QGridLayout()
         self.layout.addWidget(self.threshold_label, 0, 0, 1, 2, alignment=Qt.AlignCenter)
@@ -101,7 +92,6 @@ class DataArea(QtWidgets.QWidget):
         self.layout.addWidget(self.multi_reset_path_button,7, 1, 1, 2, alignment=Qt.AlignCenter)
         self.layout.addWidget(self.outpath_set_button,8, 0, 1, 2, alignment=Qt.AlignCenter)
         self.layout.addWidget(self.outpath_label,9, 0, 1, 2, alignment=Qt.AlignCenter)
-        self.layout.addWidget(self.log,10, 0, 1, 2, alignment=Qt.AlignCenter)
         self.setLayout(self.layout)
 
     def initialize_dataset_gui(self):

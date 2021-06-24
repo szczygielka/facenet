@@ -2,12 +2,11 @@ from constants import *
 from face_detector import * 
 from cascade_manager import *
 from pathlib import Path
-
 '''
 Class use to process imageas and videos using CascadeManager and FaceDetector
 '''
-class FacenetManager:
-    def __init__(self, cascade_manager = None, log_filename = None, output_path = None, threshold = DEFAULT_THRESHOLD, log_callback = None):
+class FacenetManager():
+    def __init__(self, cascade_manager = None, log_filename = None, output_path = None, threshold = DEFAULT_THRESHOLD):
         if cascade_manager is None:
             self.cascade_manager = CascadeManager()
         else:
@@ -16,14 +15,13 @@ class FacenetManager:
         self.face_detector = None
         self.log_filename = log_filename
         self.output_path = output_path
-        self.log_callback = log_callback
+
 
     def set_log_filename(self,log_filename):
         self.log_filename = log_filename
 
     def set_output_path(self,output_path):
         self.output_path = output_path
-        print(self.output_path)
 
     def set_threshold(self,threshold):
         self.threshold = threshold
@@ -39,7 +37,6 @@ class FacenetManager:
         if self.face_detector is None:
             self.set_face_detector_manager()
         if dataset_path is not None and dataset_path is not "":
-            print(dataset_path)
             self.face_detector.load_dataset(dataset_path)
         return self
 
@@ -79,16 +76,13 @@ class FacenetManager:
         objects = []
         for face, obj in zip(faces, detected_objects):
             closest_distance, closest_image = self.face_detector.get_closest(face)
-            print(closest_distance,  self.threshold)
             if closest_distance < self.threshold:
                 names.append("{:.2f}-{}".format(closest_distance, closest_image.face_name))
                 objects.append(obj)
                 if self.log_filename:
                     file.write("{}; {}/{}; {:.2f} ; {}\n".format(filename, self.output_path, outname, closest_distance, closest_image.face_name))
-                if self.log_callback:
-                    self.log_callback((filename, self.output_path, outname, closest_distance, closest_image.face_name))
                 detections.append((filename, self.output_path, outname, closest_distance, closest_image.face_name))
-
+                print("Distance: {:.2f}  Image: {}".format(closest_distance, closest_image.face_name))
         
         if len(names) > 0:
             image = ImageManager.add_frames(image, objects)
