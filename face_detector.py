@@ -8,7 +8,7 @@ from constants import *
 from image_manager import *
 from utils import * 
 from cascade_manager import *
-from keras_facenet import FaceNet
+# from keras_facenet import FaceNet
 
 '''
 Class use to calculate embedings and detect closest face 
