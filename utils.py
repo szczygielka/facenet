@@ -56,7 +56,9 @@ def get_files(indir, images_extensions = IMAGES_EXTENSIONS, videos_extensions = 
             results.videos_paths.append(File(indir, f))
 
     if isfile(indir):
-        add_file("", indir)
+        path =  os.path.dirname(os.path.abspath(indir))
+        name = indir.split("/")[-1].split("\\")[-1]
+        add_file(path, name)
     else:
         for f in listdir(indir):
             if isfile("{}/{}".format(indir, f)):
