@@ -64,7 +64,18 @@ class ImageArea(QtWidgets.QWidget):
         else:
             coef = self.max_image_size/width
             self.cv_image = cv2.resize(self.cv_image, (self.max_image_size, int(coef * height)), interpolation=cv2.INTER_LINEAR)
-        self.cv_image = QtGui.QImage(self.cv_image.data, self.cv_image.shape[1], self.cv_image.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
+
+        self.cv_image = cv2.cvtColor(self.cv_image, cv2.COLOR_BGR2RGB)
+        qformat = QImage.Format_Indexed8
+        if len(self.cv_image.shape) == 3:
+            if(self.cv_image.shape[2]) == 4:
+                qformat = QImage.Format_RGBA8888
+            else:
+                qformat = QImage.Format_RGB888
+
+        self.cv_image = QImage(self.cv_image, self.cv_image.shape[1], self.cv_image.shape[0], self.cv_image.strides[0], qformat)
+
+        # self.cv_image = QtGui.QImage(self.cv_image.data, self.cv_image.shape[1], self.cv_image.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
 
         self.image.setPixmap(QtGui.QPixmap.fromImage(self.cv_image))
 

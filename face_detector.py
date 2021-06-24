@@ -8,7 +8,7 @@ from constants import *
 from image_manager import *
 from utils import * 
 from cascade_manager import *
-
+from keras_facenet import FaceNet
 
 '''
 Class use to calculate embedings and detect closest face 
@@ -18,6 +18,7 @@ class FaceDetector():
     def __init__(self, model_weight_path = INCEPTION_RES_NET_V1_WEIGHTS_PATH, face_size = FACE_SIZE):
         self.model_weight_path = model_weight_path
         self.model = InceptionResNetV1(weights_path=self.model_weight_path)
+        # self.embedder = FaceNet()
         self.cascade_manager = CascadeManager()
         self.calculates_images = []
         self.face_size = face_size
@@ -52,6 +53,7 @@ class FaceDetector():
             face_name = file.name.split(".")[0] 
             for face in faces:
                 face_resized = np.resize(cv2.resize(face, self.face_size), (1, self.face_size[0], self.face_size[1],3))
+                # embedings = self.embedder.embeddings([face])
                 embedings = self.model.predict_on_batch(face_resized)
                 embedings = self.l2_normalize(embedings)
                 self.calculates_images.append(
@@ -74,6 +76,8 @@ class FaceDetector():
         face_resized = np.resize(cv2.resize(image, self.face_size), (1, self.face_size[0], self.face_size[1],3))
         embedings = self.model.predict_on_batch(face_resized)
         embedings = self.l2_normalize(embedings)
+        # embedings = self.embedder.embeddings([image])
+
         return embedings
 
     @staticmethod
