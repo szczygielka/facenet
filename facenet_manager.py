@@ -7,12 +7,16 @@ from pathlib import Path
 Class use to process imageas and videos using CascadeManager and FaceDetector
 '''
 class FacenetManager:
-    def __init__(self, cascade_manager = None, log_filename = None, output_path = None, threshold = DEFAULT_THRESHOLD):
+    def __init__(self, cascade_manager = None, log_filename = None, output_path = None, threshold = DEFAULT_THRESHOLD, log_callback = None):
         if cascade_manager is None:
             self.cascade_manager = CascadeManager()
-            self.face_detector = None
-            self.log_filename = log_filename
-            self.output_path = output_path
+        else:
+            self.cascade_manager = cascade_manager
+                
+        self.face_detector = None
+        self.log_filename = log_filename
+        self.output_path = output_path
+        self.log_callback = log_callback
 
     def set_log_filename(self,log_filename):
         self.log_filename = log_filename
@@ -81,6 +85,8 @@ class FacenetManager:
                 objects.append(obj)
                 if self.log_filename:
                     file.write("{}; {}/{}; {:.2f} ; {}\n".format(filename, self.output_path, outname, closest_distance, closest_image.face_name))
+                if self.log_callback:
+                    self.log_callback((filename, self.output_path, outname, closest_distance, closest_image.face_name))
                 detections.append((filename, self.output_path, outname, closest_distance, closest_image.face_name))
 
         

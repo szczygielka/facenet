@@ -4,8 +4,9 @@ from constants import *
 '''
 Class use to detect object by CascadeClassifier
 '''
+
 class CascadeManager():
-    def __init__(self, cascade_paths = [CASCADE_PATH], cascade_scale_factor = CASCADE_SCALE_FACTOR, cascade_min_neighbors = CASCADE_MIN_NEIGHBORS):
+    def __init__(self, cascade_paths = [CASCADE_PATH_ALT ], cascade_scale_factor = CASCADE_SCALE_FACTOR, cascade_min_neighbors = CASCADE_MIN_NEIGHBORS):
         self.cascade_paths = cascade_paths
         self.cascade_scale_factor = cascade_scale_factor
         self.cascade_min_neighbors = cascade_min_neighbors

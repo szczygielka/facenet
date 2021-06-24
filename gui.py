@@ -51,20 +51,6 @@ from multi_area import *
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread
 import time
 
-class ProcessThread(QThread):
-    facenet_manager = None
-    callback = None
-    parent = None
-    def run(self):
-        def add(data):
-            print("jest tutaj")
-            image, detections = data
-            for d in detections:
-                filename, output_path, outname, closest_distance, face_name = d
-                self.callback(FaceImageWidget(image, filename, output_path, outname, closest_distance, face_name))
-            time.sleep(0.001)
-
-        data = self.facenet_manager.process(self.path, add)
 
 class FaceImageWidget(QtWidgets.QWidget):
     def __init__(self, image, filename, output_path, outname, closest_distance, face_name, small_image_size = 100,parent = None):
@@ -94,7 +80,7 @@ class FacenetGui(QMainWindow):
         super().__init__(parent)
         self.setWindowTitle('Facenet')
         
-        self.facenet_manager = FacenetManager()
+        self.facenet_manager = FacenetManager(log_callback = self.add_log)
         
         self.centralWidget = QWidget()
         self.data_widget = DataArea(self.on_dataset_load_button_clicked_function,
@@ -114,12 +100,16 @@ class FacenetGui(QMainWindow):
         self.data_widget.set_outpath(output_path)
         self.data_widget.set_threshold(threshold)
 
+    def add_log(self, data):
+        filename, output_path, outname, closest_distance, face_name = data
+        self.data_widget.add_to_log("Distance: {:.2f}  Face name: {} \n".format(closest_distance, face_name))
+
     def on_output_path_change_function(self, val):
         self.facenet_manager.set_output_path(val)
 
     def on_dataset_load_button_clicked_function(self, val):
         self.facenet_manager.load_dataset_to_face_detector_manager(val)
-        self.data_widget.update_loaded_images(len(self.facenet_manager.face_detector.calculates_images))
+        # self.data_widget.update_loaded_images(len(self.facenet_manager.face_detector.calculates_images))
 
     def on_threshold_change_function(self, val):
         self.facenet_manager.set_threshold(val)
